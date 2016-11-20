@@ -17,7 +17,7 @@
             </intent-filter>
 
         </activity>
-<<<<<<< HEAD
+
         <service android:name=".NotificationService"
             android:label="notification service"
             android:enabled="true"
@@ -26,10 +26,9 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-=======
+
         <activity android:name=".MessagesActivity" />
->>>>>>> 885512e738ca20d2bfa5c72f34391a9bbcbd515f
-    </application>
+     </application>
 
 
 </manifest>
