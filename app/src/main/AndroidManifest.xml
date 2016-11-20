@@ -17,6 +17,7 @@
             </intent-filter>
 
         </activity>
+
         <service android:name=".NotificationService"
             android:label="notification service"
             android:enabled="true"
@@ -26,7 +27,5 @@
             </intent-filter>
         </service>
         <activity android:name=".TextActivity" />
-    </application>
-
-
+     </application>
 </manifest>
