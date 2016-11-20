@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_menu_camera"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
 
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="3">
 
             <TextView
                 android:id="@+id/name"
@@ -38,7 +38,7 @@
                 android:id="@+id/last_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You: you up lol"
+                android:text="You: you up lol haha"
                 android:layout_marginTop="8dp"
                 android:textSize="15dp"/>
 
@@ -51,7 +51,8 @@
             android:text="2:12 am"
             android:layout_weight="1"
             android:layout_marginTop="4dp"
-            android:textSize="13dp"/>
+            android:layout_gravity="end"
+            android:textAlignment="viewEnd" />
 
     </LinearLayout>
 

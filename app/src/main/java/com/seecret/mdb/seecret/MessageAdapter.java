@@ -33,7 +33,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
         Message currMessage = messageList.get(position);
 
-        holder.name.setText(currMessage.getNames().get(0));
+        holder.name.setText(currMessage.getName());
         holder.lastMessage.setText(currMessage.getLastMessage());
         holder.time.setText(currMessage.getTime());
     }

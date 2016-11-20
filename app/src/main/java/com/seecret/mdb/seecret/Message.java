@@ -8,20 +8,20 @@ import java.util.ArrayList;
 
 public class Message implements Comparable<Message> {
 
-    public ArrayList<String> names;
+    public String name;
     public String lastMessage;
     public String time;
     public String imageUrl;
 
-    public Message(ArrayList<String> currNames, String currLastMessage, String currTime, String currImageUrl){
-        names = currNames;
+    public Message(String currName, String currLastMessage, String currTime, String currImageUrl){
+        name = currName;
         lastMessage = currLastMessage;
         time = currTime;
         imageUrl = currImageUrl;
     }
 
-    public ArrayList<String> getNames(){
-        return names;
+    public String getName(){
+        return name;
     }
 
     public String getLastMessage(){

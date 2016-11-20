@@ -21,10 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<Message> messageList = new ArrayList<Message>();
 
-        ArrayList<String> fakeNames = new ArrayList<String>();
-        fakeNames.add("Leon Kwak");
-
-        Message fakeMessage1 = new Message(fakeNames, "You: you up lol", "2:12 am", "fakeurl.com");
+        Message fakeMessage1 = new Message("Leon Kwak", "You: you up lol haha", "2:12 am", "https://d3jc3ahdjad7x7.cloudfront.net/lJCJA7nyXjhz3q5jMD2WaL5TCwgHGStXvmzmS7hiTyGaJFdR.jpg");
 
         messageList.add(fakeMessage1);
         messageList.add(fakeMessage1);
