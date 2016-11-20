@@ -1,7 +1,9 @@
 package com.seecret.mdb.seecret;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +42,18 @@ public class MainActivity extends AppCompatActivity {
 
         messageAdapter = new MessageAdapter(getApplicationContext(), messageList);
         recyclerView.setAdapter(messageAdapter);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (sharedPreferences.getBoolean("Permissions Needed", true)){
+            editor.putBoolean("Permissions Needed", false);
+            editor.apply();
+            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            startActivity(intent);
+        }
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
