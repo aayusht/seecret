@@ -13,6 +13,13 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     MessageAdapter messageAdapter;
@@ -21,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -53,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
