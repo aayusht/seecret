@@ -9,41 +9,41 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by leonk7 on 11/20/16.
- */
+ * Created by leonk7 on 11/20/16.*/
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomViewHolder> {
+
+public class TextAdapter extends RecyclerView.Adapter<TextAdapter.CustomViewHolder> {
 
     private Context context;
-    public ArrayList<Message> msgList;
+    public ArrayList<Text> textList;
 
-    public MessageAdapter(Context context, ArrayList<Message> messages){
+    public TextAdapter(Context context, ArrayList<Text> messages) {
         this.context = context;
-        this.msgList = messages;
+        this.textList = messages;
     }
 
-    public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.messages_row_view, parent, false);
         return new CustomViewHolder(view);
     }
 
-    public void onBindViewHolder(final CustomViewHolder holder, int position){
+    public void onBindViewHolder(final CustomViewHolder holder, int position) {
 
-        Message currMsg = msgList.get(position);
+        Text currMsg = textList.get(position);
 
-        holder.message.setText(currMsg.getMessage());
+        holder.message.setText(currMsg.getText());
         holder.timestamp.setText(currMsg.getTimestamp());
     }
 
-    public int getItemCount(){
-        return msgList.size();
+    public int getItemCount() {
+        return textList.size();
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
         TextView message;
         TextView timestamp;
 
-        public CustomViewHolder(View view){
+        public CustomViewHolder(View view) {
             super(view);
 
             this.message = (TextView) view.findViewById(R.id.msg);
