@@ -6,26 +6,30 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-<<<<<<< HEAD
-=======
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
->>>>>>> be607ea9d69da6ec43c3a824ff26d465d137487c
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextAdapter messageAdapter;
+    MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<Message> messageList = new ArrayList<Message>();
@@ -44,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
         messageList.add(fakeMessage1);
 
         messageAdapter = new MessageAdapter(getApplicationContext(), messageList);
-<<<<<<< HEAD
-        recyclerView.setAdapter(messageAdapter);*/
-=======
         recyclerView.setAdapter(messageAdapter);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -59,14 +60,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
@@ -83,6 +82,5 @@ public class MainActivity extends AppCompatActivity {
 
                 return super.onOptionsItemSelected(item);
         }
->>>>>>> be607ea9d69da6ec43c3a824ff26d465d137487c
     }
 }

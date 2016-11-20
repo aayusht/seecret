@@ -9,6 +9,7 @@ public class Text {
     String message;
     String timestamp;
 
+
     public Text(String aMessage, String aTimestamp) {
         message = aMessage;
         timestamp = aTimestamp;
@@ -18,7 +19,11 @@ public class Text {
         return message;
     }
 
-    public String getTimestamp() {
+    public String getMessage(){
+        return message;
+    }
+
+    public String getTimestamp(){
         return timestamp;
     }
 }

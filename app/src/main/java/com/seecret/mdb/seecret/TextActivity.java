@@ -20,8 +20,8 @@ public class TextActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<Text> texts = new ArrayList<Text>();
-        Text msg1 = new Text("Victor is hot i cannot lie", "04:20");
-        texts.add(msg1);
+        Text text1 = new Text("Victor is hot i cannot lie", "04:20");
+        texts.add(text1);
 
         textAdapter = new TextAdapter(getApplicationContext(), texts);
         recyclerView.setAdapter(textAdapter);
