@@ -12,14 +12,14 @@ import java.util.ArrayList;
  * Created by leonk7 on 11/20/16.
  */
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomViewHolder> {
+public class TextAdapter extends RecyclerView.Adapter<TextAdapter.CustomViewHolder> {
 
     private Context context;
-    public ArrayList<Message> msgList;
+    public ArrayList<Text> textList;
 
-    public MessageAdapter(Context context, ArrayList<Message> messages){
+    public TextAdapter(Context context, ArrayList<Text> messages){
         this.context = context;
-        this.msgList = messages;
+        this.textList = messages;
     }
 
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -29,14 +29,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
     public void onBindViewHolder(final CustomViewHolder holder, int position){
 
-        Message currMsg = msgList.get(position);
+        Text currMsg = textList.get(position);
 
         holder.message.setText(currMsg.getMessage());
         holder.timestamp.setText(currMsg.getTimestamp());
     }
 
     public int getItemCount(){
-        return msgList.size();
+        return textList.size();
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {

@@ -41,7 +41,7 @@
             android:text="00:00"
             android:id="@+id/timestamp"
             android:textStyle="italic"
-            android:paddingLeft="10dp"/>
+            android:paddingLeft="10dp" />
 
     </android.support.constraint.ConstraintLayout>
 

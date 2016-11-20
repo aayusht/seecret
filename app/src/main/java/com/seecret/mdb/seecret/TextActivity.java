@@ -7,23 +7,23 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class MessagesActivity extends AppCompatActivity {
+public class TextActivity extends AppCompatActivity {
 
-    MessageAdapter msgAdapter;
+    TextAdapter textAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.song_recycler_view);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Message> messages = new ArrayList<Message>();
-        Message msg1 = new Message("Victor is hot i cannot lie", "04:20");
-        messages.add(msg1);
+        ArrayList<Text> texts = new ArrayList<Text>();
+        Text text1 = new Text("Victor is hot i cannot lie", "04:20");
+        texts.add(text1);
 
-        msgAdapter = new MessageAdapter(getApplicationContext(), messages);
-        recyclerView.setAdapter(msgAdapter);
+        textAdapter = new TextAdapter(getApplicationContext(), texts);
+        recyclerView.setAdapter(textAdapter);
     }
 }

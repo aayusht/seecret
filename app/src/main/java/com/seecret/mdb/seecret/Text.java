@@ -4,12 +4,12 @@ package com.seecret.mdb.seecret;
  * Created by leonk7 on 11/20/16.
  */
 
-public class Message {
+public class Text {
 
     String message;
     String timestamp;
 
-    public Message(String aMessage, String aTimestamp){
+    public Text(String aMessage, String aTimestamp){
         message = aMessage;
         timestamp = aTimestamp;
     }
