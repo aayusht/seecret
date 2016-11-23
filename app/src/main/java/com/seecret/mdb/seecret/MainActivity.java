@@ -2,14 +2,19 @@ package com.seecret.mdb.seecret;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.seecret.mdb.seecret.NotificationService;
 
 import java.util.ArrayList;
 
@@ -22,7 +27,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    MessageAdapter messageAdapter;
+    static MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,22 +37,24 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Message> messageList = new ArrayList<Message>();
+        ArrayList<Message> messages = new ArrayList<Message>();
+        String[] tags = databaseList();
+        for (int i = 0; i < tags.length; ++i) {
+            String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
+            if (!tag.contains("journal")) {
+                Log.i("requested from: ", tag);
+                CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+                SQLiteDatabase database = helper.getWritableDatabase();
 
-        Message fakeMessage1 = new Message("Leon Kwak", "You: you up lol haha", "2:12 am", "https://d3jc3ahdjad7x7.cloudfront.net/lJCJA7nyXjhz3q5jMD2WaL5TCwgHGStXvmzmS7hiTyGaJFdR.jpg");
+                String[] projection = {"id", "title", "text"};
 
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
+                Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+                cursor.moveToLast();
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), "poop o clock", "idek"));
+            }
+        }
 
-        messageAdapter = new MessageAdapter(getApplicationContext(), messageList);
+        messageAdapter = new MessageAdapter(getApplicationContext(), messages);
         recyclerView.setAdapter(messageAdapter);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
