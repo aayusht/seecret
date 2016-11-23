@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), "poop o clock", "idek"));
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), tag, "idek"));
             }
         }
 

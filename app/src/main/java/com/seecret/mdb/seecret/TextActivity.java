@@ -1,5 +1,7 @@
 package com.seecret.mdb.seecret;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +22,19 @@ public class TextActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<Text> texts = new ArrayList<Text>();
-        Text text1 = new Text("Victor is hot i cannot lie", "04:20");
-        texts.add(text1);
+        String tag = getIntent().getStringExtra("table name");
+
+        CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        String[] projection = {"id", "title", "text"};
+
+        Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+        cursor.moveToLast();
+        while (!cursor.isBeforeFirst()) {
+            texts.add(new Text(cursor.getString(2), cursor.getString(1)));
+            cursor.moveToPosition(cursor.getPosition() - 1);
+        }
 
         textAdapter = new TextAdapter(getApplicationContext(), texts);
         recyclerView.setAdapter(textAdapter);
