@@ -22,6 +22,23 @@ public class TextActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        textAdapter = new TextAdapter(getApplicationContext(), getTexts());
+        recyclerView.setAdapter(textAdapter);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateTexts();
+    }
+
+    public void updateTexts() {
+        textAdapter.setTexts(getTexts());
+        textAdapter.notifyDataSetChanged();
+    }
+
+    public ArrayList<Text> getTexts() {
         ArrayList<Text> texts = new ArrayList<Text>();
         String tag = getIntent().getStringExtra("table name");
         CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
@@ -35,17 +52,6 @@ public class TextActivity extends AppCompatActivity {
             texts.add(new Text(cursor.getString(2), cursor.getString(3)));
             cursor.moveToNext();
         }
-
-        textAdapter = new TextAdapter(getApplicationContext(), texts);
-        recyclerView.setAdapter(textAdapter);
+        return texts;
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //updateTexts();
-    }
-
-
 }

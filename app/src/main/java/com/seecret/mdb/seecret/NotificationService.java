@@ -46,14 +46,12 @@ public class NotificationService extends NotificationListenerService{
         Log.i("Tag", "" + sbn.getTag());
         Log.i("time", "" + sbn.getPostTime());
 
-        String notificationTag = sbn.getTag();
+        final String notificationTag = "table" + sbn.getTag().split(":")[1].replaceAll("[^a-zA-Z0-9]", "");
         Date date = new Date(sbn.getPostTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         String time = formatter.format(date);
 
-        notificationTag.replaceAll("[^a-zA-Z0-9]", "");
         if (notificationTag != null && sbn.getPackageName().equals("com.facebook.orca")) {
-            notificationTag = "table" + notificationTag.split(":")[1];
 
             String text = "";
             String title = "";
@@ -88,7 +86,10 @@ public class NotificationService extends NotificationListenerService{
                     @Override
                     public void run() {
                         MainActivity.messageAdapter.setMessages(getMessages());
-                        MainActivity.messageAdapter.notifyDataSetChanged();}
+                        MainActivity.messageAdapter.notifyDataSetChanged();
+                        TextActivity.textAdapter.setTexts(getTexts(notificationTag));
+                        TextActivity.textAdapter.notifyDataSetChanged();
+                    }
                 };
                 mainHandler.post(myRunnable);
 
@@ -129,6 +130,22 @@ public class NotificationService extends NotificationListenerService{
             }
         }
         return messages;
+    }
+
+    public ArrayList<Text> getTexts(String tag) {
+        ArrayList<Text> texts = new ArrayList<Text>();
+        CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        String[] projection = {"id", "title", "text", "time"};
+
+        Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            texts.add(new Text(cursor.getString(2), cursor.getString(3)));
+            cursor.moveToNext();
+        }
+        return texts;
     }
 }
 
