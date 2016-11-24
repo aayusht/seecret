@@ -62,24 +62,6 @@ public class NotificationService extends NotificationListenerService{
             try {
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), notificationTag);
                 SQLiteDatabase database = helper.getWritableDatabase();
-            /*
-            //start sql
-            EaSQLite.initialize(getApplicationContext());
-            //if the tag isn't one of the names of the tables, make a new one and add the columns
-            if (!EaSQLite.getTableNames().contains(notificationTag)) {
-                EaSQLite.createTable(notificationTag);
-                EaSQLite.addColumn(notificationTag, TITLE_COLUMN, "TEXT");
-                EaSQLite.addColumn(notificationTag, TEXT_COLUMN, "TEXT");
-            }
-
-            //add the items in the columns using Pair objects
-            Pair<String, Object> titlePair = new Pair<>(TITLE_COLUMN, (Object) title);
-            Pair<String, Object> textPair = new Pair<>(TEXT_COLUMN, (Object) text);
-            Pair<String, Object>[] pairs = new Pair[2];
-            pairs[0] = titlePair;
-            pairs[1] = textPair;
-            EaSQLite.addRow(notificationTag, pairs);
-            */
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(TITLE_COLUMN, title);
                 contentValues.put(TEXT_COLUMN, text);
@@ -87,14 +69,9 @@ public class NotificationService extends NotificationListenerService{
                 Log.i("pls", database.toString());
 
 
-                String[] projection = {"id", TITLE_COLUMN, TEXT_COLUMN};
+                String[] projection = {"id", TITLE_COLUMN, TEXT_COLUMN, TIME_COLUMN};
 
-        /*Queries in a database return a Cursor object. We pass in the cursor as a parameter to the adapter, and then
-        * set the adapter to the recyclerView*/
                 Cursor cursor = database.query(notificationTag, projection, null, null, null, null, null);
-                //cursor.moveToLast();
-                //Log.i("info", "" + cursor.getInt(0) + " " + cursor.getString(1) + " " + cursor.getString(2));
-                //MainActivity.updateMessageAdapter(cursor);
 
             } catch (Exception e) {
                 e.printStackTrace();

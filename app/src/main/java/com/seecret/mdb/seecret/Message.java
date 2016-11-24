@@ -8,16 +8,16 @@ import java.util.ArrayList;
 
 public class Message implements Comparable<Message> {
 
-    public String name;
-    public String lastMessage;
-    public String time;
-    public String imageUrl;
+    private String name;
+    private String lastMessage;
+    private String time;
+    private String tag;
 
-    public Message(String currName, String currLastMessage, String currTime, String currImageUrl){
+    public Message(String currName, String currLastMessage, String currTime, String tag){
         name = currName;
         lastMessage = currLastMessage;
         time = currTime;
-        imageUrl = currImageUrl;
+        this.tag = tag;
     }
 
     public String getName(){
@@ -32,8 +32,8 @@ public class Message implements Comparable<Message> {
         return time;
     }
 
-    public String getImageUrl(){
-        return imageUrl;
+    public String getTag(){
+        return tag;
     }
 
     public int compareTo(Message otherMessage){

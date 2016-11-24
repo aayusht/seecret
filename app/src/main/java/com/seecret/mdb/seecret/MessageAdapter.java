@@ -37,6 +37,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         holder.name.setText(currMessage.getName());
         holder.lastMessage.setText(currMessage.getLastMessage());
         holder.time.setText(currMessage.getTime());
+        holder.setTag(currMessage.getTag());
     }
 
     public int getItemCount(){
@@ -45,10 +46,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView profilePic;
         TextView name;
         TextView lastMessage;
         TextView time;
+        String tag = "";
+
+        public void setTag(String tag) {this.tag = tag;}
 
         public CustomViewHolder (View view){
 
@@ -57,12 +60,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             this.name = (TextView) (view.findViewById(R.id.name));
             this.lastMessage = (TextView) (view.findViewById(R.id.last_message));
             this.time = (TextView) (view.findViewById(R.id.time));
+            final String tableName = tag;
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, TextActivity.class);
-                    intent.putExtra("table name", time.getText());
+                    intent.putExtra("table name", tableName);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }

@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
                 SQLiteDatabase database = helper.getWritableDatabase();
 
-                String[] projection = {"id", "title", "text"};
+                String[] projection = {"id", "title", "text", "time"};
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), tag, "idek"));
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag));
             }
         }
 
