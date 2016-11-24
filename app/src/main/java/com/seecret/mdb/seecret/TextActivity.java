@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -23,16 +24,15 @@ public class TextActivity extends AppCompatActivity {
 
         ArrayList<Text> texts = new ArrayList<Text>();
         String tag = getIntent().getStringExtra("table name");
-
         CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
         SQLiteDatabase database = helper.getWritableDatabase();
 
-        String[] projection = {"id", "title", "text"};
+        String[] projection = {"id", "title", "text", "time"};
 
         Cursor cursor = database.query(tag, projection, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            texts.add(new Text(cursor.getString(2), cursor.getString(1)));
+            texts.add(new Text(cursor.getString(2), cursor.getString(3)));
             cursor.moveToNext();
         }
 

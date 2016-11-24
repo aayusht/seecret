@@ -41,6 +41,7 @@ public class NotificationService extends NotificationListenerService{
         Log.i("time", "" + sbn.getPostTime());
 
         String notificationTag = sbn.getTag();
+        String time = "" + sbn.getPostTime();
 
         notificationTag.replaceAll("[^a-zA-Z0-9]", "");
         if (notificationTag != null && sbn.getPackageName().equals("com.facebook.orca")) {
@@ -52,7 +53,6 @@ public class NotificationService extends NotificationListenerService{
                 Bundle extras = extras = sbn.getNotification().extras;
                 text = extras.getCharSequence("android.text").toString();
                 title = extras.getCharSequence("android.title").toString();
-
             }
 
             Log.i("Package", pack);
@@ -65,6 +65,7 @@ public class NotificationService extends NotificationListenerService{
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(TITLE_COLUMN, title);
                 contentValues.put(TEXT_COLUMN, text);
+                contentValues.put(TIME_COLUMN, time);
                 database.insert(notificationTag, null, contentValues);
                 Log.i("pls", database.toString());
 
