@@ -53,7 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         TextView time;
         String tag;
 
-        public void setTag(String tag) {Log.e("the tag is", tag);this.tag = tag;}
+        public void setTag(String tag) {this.tag = tag;}
 
         public String getTag() {return tag;}
 

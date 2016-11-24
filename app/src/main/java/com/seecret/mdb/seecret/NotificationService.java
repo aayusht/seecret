@@ -9,8 +9,12 @@ import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.SpannableString;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Pair;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 //import com.mdb.easqlitelib.EaSQLite;
 
@@ -41,7 +45,9 @@ public class NotificationService extends NotificationListenerService{
         Log.i("time", "" + sbn.getPostTime());
 
         String notificationTag = sbn.getTag();
-        String time = "" + sbn.getPostTime();
+        Date date = new Date(sbn.getPostTime());
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        String time = formatter.format(date);
 
         notificationTag.replaceAll("[^a-zA-Z0-9]", "");
         if (notificationTag != null && sbn.getPackageName().equals("com.facebook.orca")) {
@@ -82,10 +88,15 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg","Notification was removed" + sbn.getTag());
+        Log.i("Msg","Notification was removed " + sbn.getTag());
+        deleteDatabase(parseTag(sbn.getTag()));
     }
 
-
+    public String parseTag(String tag) {
+        tag.replaceAll("[^a-zA-Z0-9]", "");
+        tag = "table" + tag.split(":")[1];
+        return tag;
+    }
 }
 
 
