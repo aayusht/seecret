@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Message> getMessages() {
         ArrayList<Message> messages = new ArrayList<Message>();
         String[] tags = databaseList();
+        for (String s : tags) { Log.i("tag ", s); }
         for (int i = 0; i < tags.length; ++i) {
             String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
             if (!tag.contains("journal")) {

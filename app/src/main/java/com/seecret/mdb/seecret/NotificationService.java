@@ -2,6 +2,7 @@ package com.seecret.mdb.seecret;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -41,12 +42,11 @@ public class NotificationService extends NotificationListenerService{
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
 
-        //Log.i("screw you", "screw you");
         String pack = sbn.getPackageName();
         Log.i("Tag", "" + sbn.getTag());
         Log.i("time", "" + sbn.getPostTime());
 
-        final String notificationTag = "table" + sbn.getTag().split(":")[1].replaceAll("[^a-zA-Z0-9]", "");
+        final String notificationTag = parseTag(sbn.getTag());
         Date date = new Date(sbn.getPostTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         String time = formatter.format(date);
@@ -79,19 +79,8 @@ public class NotificationService extends NotificationListenerService{
                 String[] projection = {"id", TITLE_COLUMN, TEXT_COLUMN, TIME_COLUMN};
 
                 Cursor cursor = database.query(notificationTag, projection, null, null, null, null, null);
+                updateTable(notificationTag, false);
 
-                Handler mainHandler = new Handler(context.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.messageAdapter.setMessages(getMessages());
-                        MainActivity.messageAdapter.notifyDataSetChanged();
-                        TextActivity.textAdapter.setTexts(getTexts(notificationTag));
-                        TextActivity.textAdapter.notifyDataSetChanged();
-                    }
-                };
-                mainHandler.post(myRunnable);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -102,18 +91,41 @@ public class NotificationService extends NotificationListenerService{
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i("Msg","Notification was removed " + sbn.getTag());
-        deleteDatabase(parseTag(sbn.getTag()));
+        boolean deleted = deleteDatabase(parseTag(sbn.getTag()));
+        if (!deleted) {Log.e("THATS NO GOOOOD", "sad");}
+        updateTable(parseTag(sbn.getTag()), true);
     }
 
     public String parseTag(String tag) {
-        tag.replaceAll("[^a-zA-Z0-9]", "");
-        tag = "table" + tag.split(":")[1];
-        return tag;
+        return "table" + tag.split(":")[1].replaceAll("[^a-zA-Z0-9]", "");
+    }
+
+    private void updateTable(final String tag, final boolean clearing) {
+        Handler mainHandler = new Handler(context.getMainLooper());
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.messageAdapter.setMessages(getMessages());
+                MainActivity.messageAdapter.notifyDataSetChanged();
+                if (!clearing) {
+                    TextActivity.textAdapter.setTexts(getTexts(tag));
+                    TextActivity.textAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
     private ArrayList<Message> getMessages() {
         ArrayList<Message> messages = new ArrayList<Message>();
         String[] tags = databaseList();
+        for (String s : tags) { Log.i("tag ", s); }
         for (int i = 0; i < tags.length; ++i) {
             String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
             if (!tag.contains("journal")) {
