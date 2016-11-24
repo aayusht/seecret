@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.SpannableString;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 //import com.mdb.easqlitelib.EaSQLite;
@@ -80,6 +82,16 @@ public class NotificationService extends NotificationListenerService{
 
                 Cursor cursor = database.query(notificationTag, projection, null, null, null, null, null);
 
+                Handler mainHandler = new Handler(context.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.messageAdapter.setMessages(getMessages());
+                        MainActivity.messageAdapter.notifyDataSetChanged();}
+                };
+                mainHandler.post(myRunnable);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -96,6 +108,27 @@ public class NotificationService extends NotificationListenerService{
         tag.replaceAll("[^a-zA-Z0-9]", "");
         tag = "table" + tag.split(":")[1];
         return tag;
+    }
+
+    private ArrayList<Message> getMessages() {
+        ArrayList<Message> messages = new ArrayList<Message>();
+        String[] tags = databaseList();
+        for (int i = 0; i < tags.length; ++i) {
+            String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
+            if (!tag.contains("journal")) {
+                Log.i("requested from: ", tag);
+                CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+                SQLiteDatabase database = helper.getWritableDatabase();
+
+                String[] projection = {"id", "title", "text", "time"};
+
+                Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+                cursor.moveToLast();
+                Log.i("cursor", "" + cursor.getString(1));
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag));
+            }
+        }
+        return messages;
     }
 }
 

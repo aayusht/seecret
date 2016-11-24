@@ -37,6 +37,34 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+        messageAdapter = new MessageAdapter(getApplicationContext(), getMessages());
+        recyclerView.setAdapter(messageAdapter);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (sharedPreferences.getBoolean("Permissions Needed", true)){
+            editor.putBoolean("Permissions Needed", false);
+            editor.apply();
+            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateMessages();
+    }
+
+    public void updateMessages() {
+        messageAdapter.setMessages(getMessages());
+        messageAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<Message> getMessages() {
         ArrayList<Message> messages = new ArrayList<Message>();
         String[] tags = databaseList();
         for (int i = 0; i < tags.length; ++i) {
@@ -54,20 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag));
             }
         }
-
-        messageAdapter = new MessageAdapter(getApplicationContext(), messages);
-        recyclerView.setAdapter(messageAdapter);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        if (sharedPreferences.getBoolean("Permissions Needed", true)){
-            editor.putBoolean("Permissions Needed", false);
-            editor.apply();
-            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            startActivity(intent);
-        }
+        return messages;
     }
 
     public boolean onCreateOptionsMenu(Menu menu){

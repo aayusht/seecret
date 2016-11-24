@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomViewHolder> {
 
     private Context context;
-    public ArrayList<Message> messageList;
+    private ArrayList<Message> messageList;
 
     public MessageAdapter(Context context, ArrayList<Message> messages){
         this.context = context;
@@ -41,6 +41,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
         holder.setTag(currMessage.getTag());
     }
+
+    public void setMessages(ArrayList<Message> messages) {messageList = messages;}
 
     public int getItemCount(){
         return messageList.size();

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class TextActivity extends AppCompatActivity {
 
-    TextAdapter textAdapter;
+    static TextAdapter textAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,4 +39,13 @@ public class TextActivity extends AppCompatActivity {
         textAdapter = new TextAdapter(getApplicationContext(), texts);
         recyclerView.setAdapter(textAdapter);
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //updateTexts();
+    }
+
+
 }
