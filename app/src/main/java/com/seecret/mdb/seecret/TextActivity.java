@@ -18,7 +18,7 @@ public class TextActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
-
+        getSupportActionBar().setTitle(getIntent().getStringExtra("conversation name"));
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

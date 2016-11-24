@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setTitle("Conversations");
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -75,12 +80,14 @@ public class MainActivity extends AppCompatActivity {
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
                 SQLiteDatabase database = helper.getWritableDatabase();
 
-                String[] projection = {"id", "title", "text", "time"};
+                String[] projection = {"id", "title", "text", "time", "icon"};
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
                 Log.i("cursor", "" + cursor.getString(1));
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag));
+                byte[] bitmapdata = cursor.getBlob(4);
+                Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
             }
         }
         return messages;

@@ -23,7 +23,8 @@ public class CommentsDatabaseHelper extends SQLiteOpenHelper {
                 "id" + " INTEGER PRIMARY KEY" + COMMA_SEP +
                 "title" + TEXT_TYPE + COMMA_SEP +
                 "text" + TEXT_TYPE + COMMA_SEP +
-                "time" + TEXT_TYPE +
+                "time" + TEXT_TYPE + COMMA_SEP +
+                "icon" + " BLOB" +
                 " )";
     }
 
