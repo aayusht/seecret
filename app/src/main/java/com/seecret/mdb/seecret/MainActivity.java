@@ -13,16 +13,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.seecret.mdb.seecret.NotificationService;
-
 import java.util.ArrayList;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,23 +66,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
-
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
-
         switch(item.getItemId()){
 
             case R.id.messenger:
-
                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
                 startActivity(intent);
                 return true;
 
             default:
-
                 return super.onOptionsItemSelected(item);
         }
     }

@@ -2,6 +2,8 @@ package com.seecret.mdb.seecret;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +33,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
     }
 
     public void onBindViewHolder(CustomViewHolder holder, int position){
-
         Message currMessage = messageList.get(position);
 
+        //cardview background color: light shades of blue
+        if(position%2!=0){
+            holder.card.setCardBackgroundColor(Color.parseColor("#ccccff"));
+        }
+        else{
+            holder.card.setCardBackgroundColor(Color.parseColor("#e6e6ff"));
+        }
         holder.name.setText(currMessage.getName());
         holder.lastMessage.setText(currMessage.getLastMessage());
         holder.time.setText(currMessage.getTime());
@@ -49,6 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         TextView name;
         TextView lastMessage;
         TextView time;
+        CardView card;
 
         public CustomViewHolder (View view){
 
@@ -57,6 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             this.name = (TextView) (view.findViewById(R.id.name));
             this.lastMessage = (TextView) (view.findViewById(R.id.last_message));
             this.time = (TextView) (view.findViewById(R.id.time));
+            this.card = (CardView) view.findViewById(R.id.card_view);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

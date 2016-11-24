@@ -27,7 +27,6 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onCreate() {
-
         super.onCreate();
         context = getApplicationContext();
 
