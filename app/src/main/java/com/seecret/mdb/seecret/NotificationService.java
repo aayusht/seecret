@@ -109,8 +109,11 @@ public class NotificationService extends NotificationListenerService{
                 MainActivity.messageAdapter.setMessages(getMessages());
                 MainActivity.messageAdapter.notifyDataSetChanged();
                 if (!clearing) {
-                    TextActivity.textAdapter.setTexts(getTexts(tag));
-                    TextActivity.textAdapter.notifyDataSetChanged();
+                    try {
+                        TextActivity.textAdapter.setTexts(getTexts(tag));
+                        TextActivity.textAdapter.notifyDataSetChanged();
+                    }
+                    catch (NullPointerException e) {} //this will happen the first time
                 }
                 else {
                     Intent intent = new Intent(context, MainActivity.class);
