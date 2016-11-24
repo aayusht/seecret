@@ -104,7 +104,7 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg","Notification was removed");
+        Log.i("Msg","Notification was removed" + sbn.getTag());
     }
 
 

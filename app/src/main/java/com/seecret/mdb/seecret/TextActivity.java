@@ -30,10 +30,10 @@ public class TextActivity extends AppCompatActivity {
         String[] projection = {"id", "title", "text"};
 
         Cursor cursor = database.query(tag, projection, null, null, null, null, null);
-        cursor.moveToLast();
-        while (!cursor.isBeforeFirst()) {
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
             texts.add(new Text(cursor.getString(2), cursor.getString(1)));
-            cursor.moveToPosition(cursor.getPosition() - 1);
+            cursor.moveToNext();
         }
 
         textAdapter = new TextAdapter(getApplicationContext(), texts);
