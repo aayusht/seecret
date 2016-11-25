@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +23,7 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomViewHolder> {
 
     private Context context;
-    public ArrayList<Message> messageList;
+    private ArrayList<Message> messageList;
 
     public MessageAdapter(Context context, ArrayList<Message> messages){
         this.context = context;
@@ -45,7 +48,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         holder.name.setText(currMessage.getName());
         holder.lastMessage.setText(currMessage.getLastMessage());
         holder.time.setText(currMessage.getTime());
+        holder.imageView.setImageBitmap(currMessage.getBitmap());
+
+        holder.setTag(currMessage.getTag());
     }
+
+    public void setMessages(ArrayList<Message> messages) {messageList = messages;}
 
     public int getItemCount(){
         return messageList.size();
@@ -53,26 +61,32 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView profilePic;
         TextView name;
+        ImageView imageView;
         TextView lastMessage;
         TextView time;
-        CardView card;
+        String tag;
+        CardView card; //used in onBindViewHolder for alternating background colors
+
+        public void setTag(String tag) {this.tag = tag;}
+
+        public String getTag() {return tag;}
 
         public CustomViewHolder (View view){
 
             super(view);
-
             this.name = (TextView) (view.findViewById(R.id.name));
             this.lastMessage = (TextView) (view.findViewById(R.id.last_message));
             this.time = (TextView) (view.findViewById(R.id.time));
-            this.card = (CardView) view.findViewById(R.id.card_view);
+            this.imageView = (ImageView) (view.findViewById(R.id.profile_pic));
+            this.card = (CardView)(view.findViewById(R.id.card_view));
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, TextActivity.class);
-                    intent.putExtra("table name", time.getText());
+                    intent.putExtra("table name", getTag());
+                    intent.putExtra("conversation name", name.getText());
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }

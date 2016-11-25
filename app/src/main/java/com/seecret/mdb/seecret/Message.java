@@ -1,5 +1,7 @@
 package com.seecret.mdb.seecret;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 /**
@@ -8,16 +10,18 @@ import java.util.ArrayList;
 
 public class Message implements Comparable<Message> {
 
-    public String name;
-    public String lastMessage;
-    public String time;
-    public String imageUrl;
+    private String name;
+    private String lastMessage;
+    private String time;
+    private String tag;
+    private Bitmap b;
 
-    public Message(String currName, String currLastMessage, String currTime, String currImageUrl){
+    public Message(String currName, String currLastMessage, String currTime, String tag, Bitmap b){
         name = currName;
         lastMessage = currLastMessage;
         time = currTime;
-        imageUrl = currImageUrl;
+        this.tag = tag;
+        this.b = b;
     }
 
     public String getName(){
@@ -32,9 +36,11 @@ public class Message implements Comparable<Message> {
         return time;
     }
 
-    public String getImageUrl(){
-        return imageUrl;
+    public String getTag(){
+        return tag;
     }
+
+    public Bitmap getBitmap() { return b; }
 
     public int compareTo(Message otherMessage){
         return time.compareTo(otherMessage.getTime());

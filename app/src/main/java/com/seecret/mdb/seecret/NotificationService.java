@@ -2,15 +2,28 @@ package com.seecret.mdb.seecret;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
+import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.SpannableString;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Pair;
+
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 //import com.mdb.easqlitelib.EaSQLite;
 
@@ -34,16 +47,18 @@ public class NotificationService extends NotificationListenerService{
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
 
-        //Log.i("screw you", "screw you");
         String pack = sbn.getPackageName();
         Log.i("Tag", "" + sbn.getTag());
         Log.i("time", "" + sbn.getPostTime());
 
-        String notificationTag = sbn.getTag();
+        final String notificationTag = parseTag(sbn.getTag());
+        Date date = new Date(sbn.getPostTime());
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        String time = formatter.format(date);
+        byte[] imageInByte = {(byte)0};
 
-        notificationTag.replaceAll("[^a-zA-Z0-9]", "");
+
         if (notificationTag != null && sbn.getPackageName().equals("com.facebook.orca")) {
-            notificationTag = "table" + notificationTag.split(":")[1];
 
             String text = "";
             String title = "";
@@ -52,6 +67,15 @@ public class NotificationService extends NotificationListenerService{
                 text = extras.getCharSequence("android.text").toString();
                 title = extras.getCharSequence("android.title").toString();
 
+                if (android.os.Build.VERSION.SDK_INT >= 23) {
+                    Icon icon = sbn.getNotification().getLargeIcon();
+                    Drawable d = icon.loadDrawable(context);
+                    BitmapDrawable bitDw = ((BitmapDrawable) d);
+                    Bitmap bitmap = bitDw.getBitmap();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    imageInByte = stream.toByteArray();
+                }
             }
 
             Log.i("Package", pack);
@@ -61,39 +85,20 @@ public class NotificationService extends NotificationListenerService{
             try {
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), notificationTag);
                 SQLiteDatabase database = helper.getWritableDatabase();
-            /*
-            //start sql
-            EaSQLite.initialize(getApplicationContext());
-            //if the tag isn't one of the names of the tables, make a new one and add the columns
-            if (!EaSQLite.getTableNames().contains(notificationTag)) {
-                EaSQLite.createTable(notificationTag);
-                EaSQLite.addColumn(notificationTag, TITLE_COLUMN, "TEXT");
-                EaSQLite.addColumn(notificationTag, TEXT_COLUMN, "TEXT");
-            }
-
-            //add the items in the columns using Pair objects
-            Pair<String, Object> titlePair = new Pair<>(TITLE_COLUMN, (Object) title);
-            Pair<String, Object> textPair = new Pair<>(TEXT_COLUMN, (Object) text);
-            Pair<String, Object>[] pairs = new Pair[2];
-            pairs[0] = titlePair;
-            pairs[1] = textPair;
-            EaSQLite.addRow(notificationTag, pairs);
-            */
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(TITLE_COLUMN, title);
                 contentValues.put(TEXT_COLUMN, text);
+                contentValues.put(TIME_COLUMN, time);
+                contentValues.put("icon", imageInByte);
                 database.insert(notificationTag, null, contentValues);
                 Log.i("pls", database.toString());
 
 
-                String[] projection = {"id", TITLE_COLUMN, TEXT_COLUMN};
+                String[] projection = {"id", TITLE_COLUMN, TEXT_COLUMN, TIME_COLUMN, "icon"};
 
-        /*Queries in a database return a Cursor object. We pass in the cursor as a parameter to the adapter, and then
-        * set the adapter to the recyclerView*/
                 Cursor cursor = database.query(notificationTag, projection, null, null, null, null, null);
-                //cursor.moveToLast();
-                //Log.i("info", "" + cursor.getInt(0) + " " + cursor.getString(1) + " " + cursor.getString(2));
-                //MainActivity.updateMessageAdapter(cursor);
+                updateTable(notificationTag, false);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -103,10 +108,78 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg","Notification was removed");
+        Log.i("Msg","Notification was removed " + sbn.getTag());
+        boolean deleted = deleteDatabase(parseTag(sbn.getTag()));
+        updateTable(parseTag(sbn.getTag()), true);
     }
 
+    public String parseTag(String tag) {
+        return "table" + tag.split(":")[1].replaceAll("[^a-zA-Z0-9]", "");
+    }
 
+    private void updateTable(final String tag, final boolean clearing) {
+        Handler mainHandler = new Handler(context.getMainLooper());
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.messageAdapter.setMessages(getMessages());
+                MainActivity.messageAdapter.notifyDataSetChanged();
+                if (!clearing) {
+                    try {
+                        TextActivity.textAdapter.setTexts(getTexts(tag));
+                        TextActivity.textAdapter.notifyDataSetChanged();
+                    }
+                    catch (NullPointerException e) {} //this will happen the first time
+                }
+                else {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
+        };
+        mainHandler.post(myRunnable);
+    }
+
+    private ArrayList<Message> getMessages() {
+        ArrayList<Message> messages = new ArrayList<Message>();
+        String[] tags = databaseList();
+        for (String s : tags) { Log.i("tag ", s); }
+        for (int i = 0; i < tags.length; ++i) {
+            String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
+            if (!tag.contains("journal")) {
+                Log.i("requested from: ", tag);
+                CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+                SQLiteDatabase database = helper.getWritableDatabase();
+
+                String[] projection = {"id", "title", "text", "time", "icon"};
+
+                Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+                cursor.moveToLast();
+                byte[] bitmapdata = cursor.getBlob(4);
+                Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
+            }
+        }
+        return messages;
+    }
+
+    public ArrayList<Text> getTexts(String tag) {
+        ArrayList<Text> texts = new ArrayList<Text>();
+        CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        String[] projection = {"id", "title", "text", "time"};
+
+        Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            texts.add(new Text(cursor.getString(2), cursor.getString(3)));
+            cursor.moveToNext();
+        }
+        return texts;
+    }
 }
 
 
