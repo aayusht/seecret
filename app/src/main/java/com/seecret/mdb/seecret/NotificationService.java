@@ -1,5 +1,7 @@
 package com.seecret.mdb.seecret;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +21,13 @@ import android.text.SpannableString;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 //import com.mdb.easqlitelib.EaSQLite;
 
@@ -53,7 +57,7 @@ public class NotificationService extends NotificationListenerService{
 
         final String notificationTag = parseTag(sbn.getTag());
         Date date = new Date(sbn.getPostTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a MM/dd");
         String time = formatter.format(date);
         byte[] imageInByte = {(byte)0};
 
@@ -120,19 +124,29 @@ public class NotificationService extends NotificationListenerService{
     private void updateTable(final String tag, final boolean clearing) {
         Handler mainHandler = new Handler(context.getMainLooper());
 
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
+        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+        final String currentActivityName = componentInfo.getClassName();
+
+        //boolean b = componentInfo.getPackageName().equals(myPackage);
+
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                MainActivity.messageAdapter.setMessages(getMessages());
-                MainActivity.messageAdapter.notifyDataSetChanged();
-                if (!clearing) {
+                Log.i("Running class", currentActivityName);
+                if (currentActivityName.equals("com.seecret.mdb.seecret.MainActivity")) {
+                    MainActivity.messageAdapter.setMessages(getMessages());
+                    MainActivity.messageAdapter.notifyDataSetChanged();
+                }
+                if (currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
                     try {
                         TextActivity.textAdapter.setTexts(getTexts(tag));
                         TextActivity.textAdapter.notifyDataSetChanged();
-                    }
-                    catch (NullPointerException e) {} //this will happen the first time
+                    } catch (NullPointerException e) {
+                    } //this will happen the first time
                 }
-                else {
+                if (clearing && currentActivityName.startsWith("com.seecret.mdb.seecret")) {
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
