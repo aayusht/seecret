@@ -1,15 +1,21 @@
 package com.seecret.mdb.seecret;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +28,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -33,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setTitle("Conversations");
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -48,8 +59,29 @@ public class MainActivity extends AppCompatActivity {
         if (sharedPreferences.getBoolean("Permissions Needed", true)){
             editor.putBoolean("Permissions Needed", false);
             editor.apply();
-            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            LinearLayout layout = new LinearLayout(builder.getContext());
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final TextView warningMessage = new TextView(builder.getContext());
+            //TODO NOT PERMANENT!!!
+            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?");
+            warningMessage.setPadding(64, 24, 64, 0);
+            layout.addView(warningMessage);
+
+            builder.setView(layout);
+
+            builder.setTitle("Welcome to Seecret!")
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -60,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateMessages() {
-        messageAdapter.setMessages(getMessages());
+        try {
+            messageAdapter.setMessages(getMessages());
+        }
+        catch (Exception e) {
+
+        }
         messageAdapter.notifyDataSetChanged();
     }
 
@@ -75,12 +112,14 @@ public class MainActivity extends AppCompatActivity {
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
                 SQLiteDatabase database = helper.getWritableDatabase();
 
-                String[] projection = {"id", "title", "text", "time"};
+                String[] projection = {"id", "title", "text", "time", "icon"};
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
                 Log.i("cursor", "" + cursor.getString(1));
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag));
+                byte[] bitmapdata = cursor.getBlob(4);
+                Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
             }
         }
         return messages;
@@ -98,8 +137,30 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.messenger:
 
-                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                LinearLayout layout = new LinearLayout(builder.getContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final TextView warningMessage = new TextView(builder.getContext());
+                warningMessage.setText("Opening conversations in Messenger will mark conversations as read and delete them from Seecret. Are you sure you want to continue?");
+                warningMessage.setPadding(64, 24, 64, 0);
+                layout.addView(warningMessage);
+
+                builder.setView(layout);
+
+                builder.setTitle("You are about to leave Seecret")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
                 return true;
 
             default:
