@@ -3,8 +3,10 @@ package com.seecret.mdb.seecret;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.Image;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,6 +67,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
 
     public void onBindViewHolder(CustomViewHolder holder, int position){
         if (!messageList.isEmpty()) {
+            //cardview background color: light shades of blue
+            if(position%2!=0){
+                holder.card.setCardBackgroundColor(Color.parseColor("#ccccff"));
+            }
+            else{
+                holder.card.setCardBackgroundColor(Color.parseColor("#e6e6ff"));
+            }
+
             Message currMessage = messageList.get(position);
 
             holder.name.setText(currMessage.getName());
@@ -90,6 +100,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         TextView lastMessage;
         TextView time;
         String tag;
+        CardView card;
 
         public void setTag(String tag) {this.tag = tag;}
 
@@ -102,6 +113,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             this.lastMessage = (TextView) (view.findViewById(R.id.last_message));
             this.time = (TextView) (view.findViewById(R.id.time));
             this.imageView = (ImageView) (view.findViewById(R.id.profile_pic));
+            this.card = (CardView) (view.findViewById(R.id.cardview));
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

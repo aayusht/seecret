@@ -3,25 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/cardview">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         android:paddingTop="8dp">
-
-        <!--<ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/play_button"
-            app:layout_constraintBottom_toTopOf="@+id/person_pic"
-            android:layout_marginEnd="34dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="34dp"
-            android:id="@+id/play_image"
-            app:srcCompat="@drawable/ic_play_circle_outline_black_24dp" />-->
 
         <TextView
             android:layout_width="0dp"
@@ -30,6 +19,7 @@
             android:id="@+id/msg"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:paddingLeft="10dp"
+            android:textSize="16dp"
             app:layout_constraintLeft_toLeftOf="@+id/timestamp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="8dp"
