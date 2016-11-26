@@ -2,8 +2,6 @@ package com.seecret.mdb.seecret;
 
 import android.graphics.Bitmap;
 
-import java.util.ArrayList;
-
 /**
  * Created by kedarthakkar on 11/20/16.
  */
