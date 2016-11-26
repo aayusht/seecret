@@ -12,7 +12,7 @@ public class Text {
 
     public Text(String aMessage, String aTimestamp) {
         message = aMessage;
-        timestamp = aTimestamp;
+        timestamp = "Delivered at " + aTimestamp;
     }
 
     public String getText() {

@@ -27,6 +27,8 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.CustomViewHold
         return new CustomViewHolder(view);
     }
 
+    public void setTexts(ArrayList<Text> texts) { textList = texts; }
+
     public void onBindViewHolder(final CustomViewHolder holder, int position){
 
         Text currMsg = textList.get(position);

@@ -1,15 +1,26 @@
 package com.seecret.mdb.seecret;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.seecret.mdb.seecret.NotificationService;
 
 import java.util.ArrayList;
 
@@ -17,37 +28,28 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    MessageAdapter messageAdapter;
+    static MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle("Conversations");
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<Message> messageList = new ArrayList<Message>();
 
-        Message fakeMessage1 = new Message("Leon Kwak", "You: you up lol haha", "2:12 am", "https://d3jc3ahdjad7x7.cloudfront.net/lJCJA7nyXjhz3q5jMD2WaL5TCwgHGStXvmzmS7hiTyGaJFdR.jpg");
-
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-        messageList.add(fakeMessage1);
-
-        messageAdapter = new MessageAdapter(getApplicationContext(), messageList);
+        messageAdapter = new MessageAdapter(getApplicationContext(), getMessages());
         recyclerView.setAdapter(messageAdapter);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -57,9 +59,70 @@ public class MainActivity extends AppCompatActivity {
         if (sharedPreferences.getBoolean("Permissions Needed", true)){
             editor.putBoolean("Permissions Needed", false);
             editor.apply();
-            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            LinearLayout layout = new LinearLayout(builder.getContext());
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final TextView warningMessage = new TextView(builder.getContext());
+            //TODO NOT PERMANENT!!!
+            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?");
+            warningMessage.setPadding(64, 24, 64, 0);
+            layout.addView(warningMessage);
+
+            builder.setView(layout);
+
+            builder.setTitle("Welcome to Seecret!")
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateMessages();
+    }
+
+    public void updateMessages() {
+        try {
+            messageAdapter.setMessages(getMessages());
+        }
+        catch (Exception e) {
+
+        }
+        messageAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<Message> getMessages() {
+        ArrayList<Message> messages = new ArrayList<Message>();
+        String[] tags = databaseList();
+        for (String s : tags) { Log.i("tag ", s); }
+        for (int i = 0; i < tags.length; ++i) {
+            String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
+            if (!tag.contains("journal")) {
+                Log.i("requested from: ", tag);
+                CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
+                SQLiteDatabase database = helper.getWritableDatabase();
+
+                String[] projection = {"id", "title", "text", "time", "icon"};
+
+                Cursor cursor = database.query(tag, projection, null, null, null, null, null);
+                cursor.moveToLast();
+                Log.i("cursor", "" + cursor.getString(1));
+                byte[] bitmapdata = cursor.getBlob(4);
+                Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
+            }
+        }
+        return messages;
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -74,8 +137,30 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.messenger:
 
-                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                LinearLayout layout = new LinearLayout(builder.getContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final TextView warningMessage = new TextView(builder.getContext());
+                warningMessage.setText("Opening conversations in Messenger will mark conversations as read and delete them from Seecret. Are you sure you want to continue?");
+                warningMessage.setPadding(64, 24, 64, 0);
+                layout.addView(warningMessage);
+
+                builder.setView(layout);
+
+                builder.setTitle("You are about to leave Seecret")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
                 return true;
 
             default:
