@@ -114,7 +114,7 @@ public class NotificationService extends NotificationListenerService{
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i("Msg","Notification was removed " + sbn.getTag());
-        boolean deleted = deleteDatabase(parseTag(sbn.getTag()));
+        deleteDatabase(parseTag(sbn.getTag()));
         updateTable(parseTag(sbn.getTag()), true);
     }
 
@@ -123,35 +123,39 @@ public class NotificationService extends NotificationListenerService{
     }
 
     private void updateTable(final String tag, final boolean clearing) {
-        Handler mainHandler = new Handler(context.getMainLooper());
-
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
         final String currentActivityName = componentInfo.getClassName();
 
-        //boolean b = componentInfo.getPackageName().equals(myPackage);
+        Handler mainHandler = new Handler(context.getMainLooper());
 
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+
                 Log.i("Running class", currentActivityName);
-                if (currentActivityName.equals("com.seecret.mdb.seecret.MainActivity")) {
+                if (clearing && currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);}
+                else if (currentActivityName.equals("com.seecret.mdb.seecret.MainActivity")) {
                     MainActivity.messageAdapter.setMessages(getMessages());
                     MainActivity.messageAdapter.notifyDataSetChanged();
                 }
-                if (currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                else if (currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                    MainActivity.messageAdapter.setMessages(getMessages());
+                    MainActivity.messageAdapter.notifyDataSetChanged();
                     try {
                         TextActivity.textAdapter.setTexts(getTexts(tag));
                         TextActivity.textAdapter.notifyDataSetChanged();
                     } catch (NullPointerException e) {
                     } //this will happen the first time
                 }
-                if (clearing && currentActivityName.startsWith("com.seecret.mdb.seecret")) {
+                /*if (clearing && currentActivityName.startsWith("com.seecret.mdb.seecret")) {
                     Intent intent = new Intent(context, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
-                }
+                }*/
             }
         };
         mainHandler.post(myRunnable);
