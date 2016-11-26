@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,8 @@ public class TextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
         getSupportActionBar().setTitle(getIntent().getStringExtra("conversation name"));
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -54,5 +56,16 @@ public class TextActivity extends AppCompatActivity {
             cursor.moveToNext();
         }
         return texts;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

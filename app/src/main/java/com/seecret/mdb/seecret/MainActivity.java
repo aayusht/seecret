@@ -1,6 +1,5 @@
 package com.seecret.mdb.seecret;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,31 +7,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.seecret.mdb.seecret.NotificationService;
-
 import java.util.ArrayList;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -140,25 +128,35 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                LinearLayout layout = new LinearLayout(builder.getContext());
-                layout.setOrientation(LinearLayout.VERTICAL);
-
-                final TextView warningMessage = new TextView(builder.getContext());
-                warningMessage.setText("Opening Messenger will delete conversations from Seecret. Are you sure you want to continue?" + "\n\n" +
-                        "Note: If you do not open the conversation in Messenger, the sender will still not know you read the message." +
-                        " However, the unread message notification from your phone will disappear, clearing the conversation from Seecret.");
-                warningMessage.setPadding(64, 24, 64, 0);
-                layout.addView(warningMessage);
-
-                builder.setView(layout);
-
-                builder.setTitle("You are about to leave Seecret")
+                builder.setTitle("Are you sure you want to leave Seecret?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+                return true;
+
+            case R.id.trash:
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+
+                builder1.setTitle("Are you sure you want to delete all conversations?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String[] tags = databaseList();
+                                for (int i = 0; i < tags.length; ++i) {
+                                    String tag = tags[i].replaceAll("[^a-zA-Z0-9]", "");
+                                    if (!tag.contains("journal")) {
+                                        deleteDatabase(tag);
+                                    }
+                                }
+                                updateMessages();
                             }
                         })
                         .setNegativeButton("No", null)

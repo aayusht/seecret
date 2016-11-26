@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,11 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.text.SpannableString;
-import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.Pair;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -112,9 +107,9 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg","Notification was removed " + sbn.getTag());
-        boolean deleted = deleteDatabase(parseTag(sbn.getTag()));
-        updateTable(parseTag(sbn.getTag()), true);
+        //Log.i("Msg","Notification was removed " + sbn.getTag());
+        //deleteDatabase(parseTag(sbn.getTag()));
+        //updateTable(parseTag(sbn.getTag()), true);
     }
 
     public String parseTag(String tag) {
@@ -122,35 +117,39 @@ public class NotificationService extends NotificationListenerService{
     }
 
     private void updateTable(final String tag, final boolean clearing) {
-        Handler mainHandler = new Handler(context.getMainLooper());
-
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
         final String currentActivityName = componentInfo.getClassName();
 
-        //boolean b = componentInfo.getPackageName().equals(myPackage);
+        Handler mainHandler = new Handler(context.getMainLooper());
 
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+
                 Log.i("Running class", currentActivityName);
-                if (currentActivityName.equals("com.seecret.mdb.seecret.MainActivity")) {
+                if (clearing && currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);}
+                else if (currentActivityName.equals("com.seecret.mdb.seecret.MainActivity")) {
                     MainActivity.messageAdapter.setMessages(getMessages());
                     MainActivity.messageAdapter.notifyDataSetChanged();
                 }
-                if (currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                else if (currentActivityName.equals("com.seecret.mdb.seecret.TextActivity")) {
+                    MainActivity.messageAdapter.setMessages(getMessages());
+                    MainActivity.messageAdapter.notifyDataSetChanged();
                     try {
                         TextActivity.textAdapter.setTexts(getTexts(tag));
                         TextActivity.textAdapter.notifyDataSetChanged();
                     } catch (NullPointerException e) {
                     } //this will happen the first time
                 }
-                if (clearing && currentActivityName.startsWith("com.seecret.mdb.seecret")) {
+                /*if (clearing && currentActivityName.startsWith("com.seecret.mdb.seecret")) {
                     Intent intent = new Intent(context, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
-                }
+                }*/
             }
         };
         mainHandler.post(myRunnable);

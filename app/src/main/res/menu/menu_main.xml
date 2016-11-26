@@ -9,4 +9,11 @@
         android:title="Messenger"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/trash"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="Clear All"
+        android:orderInCategory="10"
+        app:showAsAction="always" />
+
 </menu>
