@@ -92,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateMessages() {
-        messageAdapter.setMessages(getMessages());
+        try {
+            messageAdapter.setMessages(getMessages());
+        }
+        catch (Exception e) {
+
+        }
         messageAdapter.notifyDataSetChanged();
     }
 
