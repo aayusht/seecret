@@ -66,19 +66,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
     }
 
     public void onBindViewHolder(CustomViewHolder holder, int position){
-        Message currMessage = messageList.get(position);
-
         //cardview background color: light shades of blue
-        if(position%2!=0){
+        /*if(position%2!=0){
             holder.card.setCardBackgroundColor(Color.parseColor("#ccccff"));
         }
         else{
             holder.card.setCardBackgroundColor(Color.parseColor("#e6e6ff"));
-        }
-        holder.name.setText(currMessage.getName());
-        holder.lastMessage.setText(currMessage.getLastMessage());
-        holder.time.setText(currMessage.getTime());
-        holder.imageView.setImageBitmap(currMessage.getBitmap());
+        }*/
+
         if (!messageList.isEmpty()) {
             Message currMessage = messageList.get(position);
 
