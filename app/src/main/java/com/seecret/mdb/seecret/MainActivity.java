@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
             final TextView warningMessage = new TextView(builder.getContext());
             //TODO NOT PERMANENT!!!
-            warningMessage.setText("Informational stuff, idek, pls enable notification access yooo");
+            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?");
             warningMessage.setPadding(64, 24, 64, 0);
             layout.addView(warningMessage);
 
