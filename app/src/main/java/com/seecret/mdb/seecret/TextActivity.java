@@ -19,6 +19,8 @@ public class TextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
         getSupportActionBar().setTitle(getIntent().getStringExtra("conversation name"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

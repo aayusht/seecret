@@ -113,9 +113,9 @@ public class NotificationService extends NotificationListenerService{
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg","Notification was removed " + sbn.getTag());
-        deleteDatabase(parseTag(sbn.getTag()));
-        updateTable(parseTag(sbn.getTag()), true);
+        //Log.i("Msg","Notification was removed " + sbn.getTag());
+        //deleteDatabase(parseTag(sbn.getTag()));
+        //updateTable(parseTag(sbn.getTag()), true);
     }
 
     public String parseTag(String tag) {
