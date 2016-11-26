@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
             final TextView warningMessage = new TextView(builder.getContext());
             //TODO NOT PERMANENT!!!
-            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?");
+            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?" +
+                    " (Press back to return to app when done)");
             warningMessage.setPadding(64, 24, 64, 0);
             layout.addView(warningMessage);
 
@@ -143,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
                 layout.setOrientation(LinearLayout.VERTICAL);
 
                 final TextView warningMessage = new TextView(builder.getContext());
-                warningMessage.setText("Opening Messenger will mark conversations as read and delete them from Seecret. Are you sure you want to continue?");
+                warningMessage.setText("Opening Messenger will delete conversations from Seecret. Are you sure you want to continue?" + "\n\n" +
+                        "Note: If you do not open the conversation in Messenger, the sender will still not know you read the message." +
+                        " However, the unread message notification from your phone will disappear, clearing the conversation from Seecret.");
                 warningMessage.setPadding(64, 24, 64, 0);
                 layout.addView(warningMessage);
 
