@@ -58,7 +58,7 @@ public class NotificationService extends NotificationListenerService{
 
         final String notificationTag = parseTag(sbn.getTag());
         Date date = new Date(sbn.getPostTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a MM/dd");
         String time = formatter.format(date);
         byte[] imageInByte = {(byte)0};
 
