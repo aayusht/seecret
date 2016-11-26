@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 layout.setOrientation(LinearLayout.VERTICAL);
 
                 final TextView warningMessage = new TextView(builder.getContext());
-                warningMessage.setText("Opening conversations in Messenger will mark conversations as read and delete them from Seecret. Are you sure you want to continue?");
+                warningMessage.setText("Opening Messenger will mark conversations as read and delete them from Seecret. Are you sure you want to continue?");
                 warningMessage.setPadding(64, 24, 64, 0);
                 layout.addView(warningMessage);
 
