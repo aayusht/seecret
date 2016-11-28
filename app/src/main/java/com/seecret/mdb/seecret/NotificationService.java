@@ -142,8 +142,10 @@ public class NotificationService extends NotificationListenerService{
                     MainActivity.messageAdapter.setMessages(getMessages());
                     MainActivity.messageAdapter.notifyDataSetChanged();
                     try {
-                        TextActivity.textAdapter.setTexts(getTexts(tag));
-                        TextActivity.textAdapter.notifyDataSetChanged();
+                        if (TextActivity.textAdapter.tableName.equals(tag)) {
+                            TextActivity.textAdapter.setTexts(getTexts(tag));
+                            TextActivity.textAdapter.notifyDataSetChanged();
+                        }
                     } catch (NullPointerException e) {
                     } //this will happen the first time
                 }

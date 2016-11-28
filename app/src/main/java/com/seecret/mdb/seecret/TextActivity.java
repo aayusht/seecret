@@ -25,7 +25,7 @@ public class TextActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        textAdapter = new TextAdapter(getApplicationContext(), getTexts());
+        textAdapter = new TextAdapter(getApplicationContext(), getTexts(), getIntent().getStringExtra("table name"));
         recyclerView.setAdapter(textAdapter);
     }
 
