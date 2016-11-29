@@ -31,7 +31,6 @@ public class TextActivity extends AppCompatActivity {
         recyclerView.setAdapter(textAdapter);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
