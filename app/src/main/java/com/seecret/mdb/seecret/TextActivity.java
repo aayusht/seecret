@@ -23,7 +23,9 @@ public class TextActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.text_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(manager);
 
         textAdapter = new TextAdapter(getApplicationContext(), getTexts(), getIntent().getStringExtra("table name"));
         recyclerView.setAdapter(textAdapter);
