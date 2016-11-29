@@ -53,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
             layout.setOrientation(LinearLayout.VERTICAL);
 
             final TextView warningMessage = new TextView(builder.getContext());
-            //TODO NOT PERMANENT!!!
-            warningMessage.setText("Welcome to Seecret! Seecret stores your unseen messages by reading your notifications. To use Seecret, you will have to enable notification access in Settings. Continue to Settings?" +
-                    " (Press back to return to app when done)");
+            warningMessage.setText("Seecret lets you view your Facebook messages secretly. To do this, you must give Seecret access to your notifications. Continue?");
             warningMessage.setPadding(64, 24, 64, 0);
             layout.addView(warningMessage);
 
@@ -125,19 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.messenger:
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                builder.setTitle("Are you sure you want to leave Seecret?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
+                Intent intent = getPackageManager().getLaunchIntentForPackage("com.facebook.orca");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
 
                 return true;
 

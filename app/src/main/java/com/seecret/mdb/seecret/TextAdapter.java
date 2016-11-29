@@ -16,10 +16,12 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.CustomViewHold
 
     private Context context;
     public ArrayList<Text> textList;
+    public String tableName;
 
-    public TextAdapter(Context context, ArrayList<Text> messages){
+    public TextAdapter(Context context, ArrayList<Text> messages, String tableName){
         this.context = context;
         this.textList = messages;
+        this.tableName = tableName;
     }
 
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
