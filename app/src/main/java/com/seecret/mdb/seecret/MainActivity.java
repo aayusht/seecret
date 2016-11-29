@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
             messageAdapter.setMessages(getMessages());
         }
         catch (Exception e) {
-
         }
         messageAdapter.notifyDataSetChanged();
     }

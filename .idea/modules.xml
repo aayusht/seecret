@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Seecret.iml" filepath="$PROJECT_DIR$/Seecret.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/seecret.iml" filepath="$PROJECT_DIR$/seecret.iml" />
     </modules>
   </component>
 </project>
