@@ -21,6 +21,7 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -52,9 +53,7 @@ public class NotificationService extends NotificationListenerService{
         Log.i("time", "" + sbn.getPostTime());
 
         final String notificationTag = parseTag(sbn.getTag());
-        Date date = new Date(sbn.getPostTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a MM/dd");
-        String time = formatter.format(date);
+        String time = "" + sbn.getPostTime();
         byte[] imageInByte = {(byte)0};
 
 
@@ -63,7 +62,7 @@ public class NotificationService extends NotificationListenerService{
             String text = "";
             String title = "";
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                Bundle extras = extras = sbn.getNotification().extras;
+                Bundle extras = sbn.getNotification().extras;
                 text = extras.getCharSequence("android.text").toString();
                 title = extras.getCharSequence("android.title").toString();
 
@@ -178,6 +177,8 @@ public class NotificationService extends NotificationListenerService{
                 messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
             }
         }
+        Collections.sort(messages);
+        Collections.reverse(messages);
         return messages;
     }
 

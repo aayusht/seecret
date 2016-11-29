@@ -82,6 +82,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             holder.lastMessage.setText(currMessage.getLastMessage());
             holder.time.setText(currMessage.getTime());
             holder.imageView.setImageBitmap(currMessage.getBitmap());
+            holder.numberOfMessages.setText("" + messageList.size());
             holder.clearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -119,6 +120,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
         ImageView clearButton;
         TextView lastMessage;
         TextView time;
+        TextView numberOfMessages;
         String tag;
         CardView card;
 
@@ -134,6 +136,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             this.time = (TextView) (view.findViewById(R.id.time));
             this.imageView = (ImageView) (view.findViewById(R.id.profile_pic));
             this.clearButton = (ImageView) (view.findViewById(R.id.imageView));
+            this.numberOfMessages = (TextView) (view.findViewById(R.id.numMessages));
             this.card = (CardView) (view.findViewById(R.id.cardview));
 
             view.setOnClickListener(new View.OnClickListener() {
