@@ -1,6 +1,12 @@
 package com.seecret.mdb.seecret;
 
 import android.graphics.Bitmap;
+import android.icu.text.DateFormat;
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 
 /**
  * Created by kedarthakkar on 11/20/16.
@@ -10,7 +16,7 @@ public class Message implements Comparable<Message> {
 
     private String name;
     private String lastMessage;
-    private String time;
+    public String time;
     private String tag;
     private Bitmap b;
 
@@ -31,6 +37,9 @@ public class Message implements Comparable<Message> {
     }
 
     public String getTime(){
+        Date date = new Date(Long.parseLong(time));
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a MM/dd");
+        String time = formatter.format(date);
         return time;
     }
 
@@ -40,7 +49,7 @@ public class Message implements Comparable<Message> {
 
     public Bitmap getBitmap() { return b; }
 
-    public int compareTo(Message otherMessage){
-        return time.compareTo(otherMessage.getTime());
+    public int compareTo(Message otherMessage) {
+        return time.compareTo(otherMessage.time);
     }
 }

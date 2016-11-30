@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
             }
         }
+        Collections.sort(messages);
+        Collections.reverse(messages);
         return messages;
     }
 
