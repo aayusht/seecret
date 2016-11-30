@@ -82,7 +82,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             holder.lastMessage.setText(currMessage.getLastMessage());
             holder.time.setText(currMessage.getTime());
             holder.imageView.setImageBitmap(currMessage.getBitmap());
-            holder.numberOfMessages.setText("" + messageList.size());
+            holder.numberOfMessages.setText("" + messageList.size() + " unread messages");
+            holder.numberOfMessages.setTypeface(null, Typeface.ITALIC);
             holder.clearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
