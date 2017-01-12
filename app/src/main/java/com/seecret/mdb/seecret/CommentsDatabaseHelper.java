@@ -24,7 +24,8 @@ public class CommentsDatabaseHelper extends SQLiteOpenHelper {
                 "title" + TEXT_TYPE + COMMA_SEP +
                 "text" + TEXT_TYPE + COMMA_SEP +
                 "time" + TEXT_TYPE + COMMA_SEP +
-                "icon" + " BLOB" +
+                "icon" + " BLOB" + COMMA_SEP +
+                "count" + TEXT_TYPE +
                 " )";
     }
 

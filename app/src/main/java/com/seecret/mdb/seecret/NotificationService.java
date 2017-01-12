@@ -52,13 +52,13 @@ public class NotificationService extends NotificationListenerService{
         Log.i("Tag", "" + sbn.getTag());
         Log.i("time", "" + sbn.getPostTime());
 
-        final String notificationTag = parseTag(sbn.getTag());
+        String tag = sbn.getTag();
         String time = "" + sbn.getPostTime();
         byte[] imageInByte = {(byte)0};
 
 
-        if (notificationTag != null && sbn.getPackageName().equals("com.facebook.orca")) {
-
+        if (tag != null && sbn.getPackageName().equals("com.facebook.orca")) {
+            final String notificationTag = parseTag(tag);
             String text = "";
             String title = "";
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
@@ -168,13 +168,13 @@ public class NotificationService extends NotificationListenerService{
                 CommentsDatabaseHelper helper = new CommentsDatabaseHelper(getApplicationContext(), tag);
                 SQLiteDatabase database = helper.getWritableDatabase();
 
-                String[] projection = {"id", "title", "text", "time", "icon"};
+                String[] projection = {"id", "title", "text", "time", "icon", "count"};
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
                 byte[] bitmapdata = cursor.getBlob(4);
                 Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b, "" + cursor.getCount()));
             }
         }
         Collections.sort(messages);

@@ -105,10 +105,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Cursor cursor = database.query(tag, projection, null, null, null, null, null);
                 cursor.moveToLast();
-                Log.i("cursor", "" + cursor.getString(1));
                 byte[] bitmapdata = cursor.getBlob(4);
                 Bitmap b = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);;
-                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b));
+                messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), tag, b, "" + cursor.getCount()));
             }
         }
         Collections.sort(messages);

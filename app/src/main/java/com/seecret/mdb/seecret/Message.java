@@ -19,13 +19,15 @@ public class Message implements Comparable<Message> {
     public String time;
     private String tag;
     private Bitmap b;
+    private int count;
 
-    public Message(String currName, String currLastMessage, String currTime, String tag, Bitmap b){
+    public Message(String currName, String currLastMessage, String currTime, String tag, Bitmap b, String count){
         name = currName;
         lastMessage = currLastMessage;
         time = currTime;
         this.tag = tag;
         this.b = b;
+        this.count = Integer.parseInt(count);
     }
 
     public String getName(){
@@ -48,6 +50,8 @@ public class Message implements Comparable<Message> {
     }
 
     public Bitmap getBitmap() { return b; }
+
+    public int getCount() { return count; }
 
     public int compareTo(Message otherMessage) {
         return time.compareTo(otherMessage.time);

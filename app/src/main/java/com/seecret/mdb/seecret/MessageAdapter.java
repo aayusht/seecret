@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,11 +83,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.CustomVi
             holder.lastMessage.setText(currMessage.getLastMessage());
             holder.time.setText(currMessage.getTime());
             holder.imageView.setImageBitmap(currMessage.getBitmap());
-            if (messageList.size() == 1) {
-                holder.numberOfMessages.setText("" + messageList.size() + " unread message");
+            int count = currMessage.getCount();
+            if (count == 1) {
+                holder.numberOfMessages.setText("" + count + " unread message");
             }
             else {
-                holder.numberOfMessages.setText("" + messageList.size() + " unread messages");
+                holder.numberOfMessages.setText("" + count + " unread messages");
             }
             holder.numberOfMessages.setTypeface(null, Typeface.ITALIC);
             holder.clearButton.setOnClickListener(new View.OnClickListener() {
